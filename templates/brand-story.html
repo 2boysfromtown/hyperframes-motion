@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smooth Brand Story</title>
+  <link rel="stylesheet" href="../css/motion-effects.css">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background: #0a0a0a;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+    }
+
+    .scene {
+      position: absolute;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .scene.active { opacity: 1; visibility: visible; }
+
+    /* Elegant gradient backgrounds */
+    .bg-gradient-1 {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    }
+
+    .bg-gradient-2 {
+      background: linear-gradient(135deg, #0f3460 0%, #533483 50%, #e94560 100%);
+    }
+
+    .bg-gradient-3 {
+      background: linear-gradient(135deg, #1a1a2e 0%, #0a0a0a 100%);
+    }
+
+    .noise-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .vignette {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.5) 100%);
+      pointer-events: none;
+    }
+
+    /* Typography */
+    .elegant-title {
+      font-size: 72px;
+      font-weight: 300;
+      letter-spacing: 15px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .elegant-title span {
+      font-weight: 700;
+      display: block;
+      font-size: 96px;
+      letter-spacing: 25px;
+      margin-top: 10px;
+    }
+
+    .story-text {
+      font-size: 32px;
+      font-weight: 300;
+      line-height: 1.6;
+      max-width: 800px;
+      text-align: center;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .story-text strong {
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .divider {
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #fff, transparent);
+      margin: 40px auto;
+    }
+
+    .floating-element {
+      position: absolute;
+      font-size: 200px;
+      opacity: 0.1;
+      filter: blur(2px);
+    }
+
+    .value-prop {
+      font-size: 48px;
+      font-weight: 200;
+      letter-spacing: 8px;
+      text-align: center;
+    }
+
+    .value-prop .highlight {
+      font-weight: 700;
+      color: #e94560;
+    }
+
+    .cta-elegant {
+      padding: 20px 60px;
+      border: 2px solid rgba(255,255,255,0.3);
+      font-size: 18px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      background: transparent;
+      color: white;
+      cursor: pointer;
+      transition: all 0.5s ease;
+      margin-top: 50px;
+    }
+
+    .cta-elegant:hover {
+      background: white;
+      color: #0a0a0a;
+      border-color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="noise-overlay"></div>
+  <div class="vignette"></div>
+
+  <!-- Scene 1: Brand Intro -->
+  <div class="scene bg-gradient-1" id="scene1">
+    <h1 class="elegant-title">
+      Welcome to
+      <span>BRAND</span>
+    </h1>
+    <div class="divider"></div>
+    <p class="story-text">Where quality meets purpose</p>
+  </div>
+
+  <!-- Scene 2: Story -->
+  <div class="scene bg-gradient-2" id="scene2">
+    <div class="floating-element" style="top: 10%; left: 10%;">✦</div>
+    <div class="floating-element" style="bottom: 10%; right: 10%;">✦</div>
+    <p class="story-text">
+      We believe in <strong>craftsmanship</strong> over mass production.<br>
+      Every detail matters.<br>
+      Every product tells a <strong>story</strong>.
+    </p>
+  </div>
+
+  <!-- Scene 3: Values -->
+  <div class="scene bg-gradient-3" id="scene3">
+    <p class="value-prop">
+      Built with<br>
+      <span class="highlight">PASSION</span>
+    </p>
+    <div class="divider"></div>
+    <p class="value-prop" style="font-size: 32px;">
+      Designed for <span class="highlight">YOU</span>
+    </p>
+  </div>
+
+  <!-- Scene 4: CTA -->
+  <div class="scene bg-gradient-1" id="scene4">
+    <h2 class="elegant-title" style="font-size: 48px;">
+      Join the
+      <span style="font-size: 64px;">JOURNEY</span>
+    </h2>
+    <button class="cta-elegant" id="cta">Discover More</button>
+  </div>
+
+  <script>
+    // Scene 1: Gentle fade in
+    function createScene1() {
+      const tl = gsap.timeline({ paused: true });
+      
+      tl.set('#scene1', { opacity: 1, visibility: 'visible' })
+        .from('.elegant-title', {
+          y: 50,
+          opacity: 0,
+          duration: 1.5,
+          ease: 'power3.out'
+        })
+        .from('.divider', {
+          scaleX: 0,
+          duration: 1,
+          ease: 'power2.inOut'
+        }, '-=0.5')
+        .from('.story-text', {
+          y: 30,
+          opacity: 0,
+          duration: 1,
+          ease: 'power3.out'
+        }, '-=0.5')
+        .to('#scene1', {
+          opacity: 0,
+          duration: 1.5,
+          delay: 1,
+          ease: 'power2.in',
+          onComplete: () => {
+            document.getElementById('scene1').style.visibility = 'hidden';
+            playScene(1);
+          }
+        });
+      return tl;
+    }
+
+    // Scene 2: Parallax story
+    function createScene2() {
+      const tl = gsap.timeline({ paused: true });
+      
+      tl.set('#scene2', { opacity: 1, visibility: 'visible' })
+        .from('.story-text', {
+          y: 100,
+          opacity: 0,
+          duration: 1.5,
+          ease: 'power3.out'
+        })
+        .from('.floating-element', {
+          y: -50,
+          opacity: 0,
+          rotation: 20,
+          duration: 2,
+          stagger: 0.3,
+          ease: 'power2.out'
+        }, '-=1')
+        .to('.floating-element', {
+          y: -30,
+          duration: 3,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: 1
+        }, '+=0.5')
+        .to('#scene2', {
+          opacity: 0,
+          duration: 1.5,
+          delay: 0.5,
+          onComplete: () => {
+            document.getElementById('scene2').style.visibility = 'hidden';
+            playScene(2);
+          }
+        });
+      return tl;
+    }
+
+    // Scene 3: Value reveal
+    function createScene3() {
+      const tl = gsap.timeline({ paused: true });
+      
+      tl.set('#scene3', { opacity: 1, visibility: 'visible' })
+        .from('.value-prop', {
+          clipPath: 'inset(0 100% 0 0)',
+          duration: 1.2,
+          ease: 'power3.inOut'
+        })
+        .from('.highlight', {
+          color: '#fff',
+          duration: 1,
+          ease: 'power2.out'
+        }, '-=0.5')
+        .from('.divider', {
+          scaleX: 0,
+          duration: 0.8,
+          ease: 'power2.inOut'
+        }, '-=0.3')
+        .to('#scene3', {
+          opacity: 0,
+          duration: 1.5,
+          delay: 1,
+          onComplete: () => {
+            document.getElementById('scene3').style.visibility = 'hidden';
+            playScene(3);
+          }
+        });
+      return tl;
+    }
+
+    // Scene 4: Elegant CTA
+    function createScene4() {
+      const tl = gsap.timeline({ paused: true });
+      
+      tl.set('#scene4', { opacity: 1, visibility: 'visible' })
+        .from('.elegant-title', {
+          y: 80,
+          opacity: 0,
+          letterSpacing: '50px',
+          duration: 1.5,
+          ease: 'power3.out'
+        })
+        .from('#cta', {
+          y: 50,
+          opacity: 0,
+          duration: 1,
+          ease: 'power3.out'
+        }, '-=0.5')
+        .to('#cta', {
+          boxShadow: '0 0 40px rgba(255,255,255,0.3)',
+          duration: 2,
+          ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1
+        });
+      return tl;
+    }
+
+    const timelines = [
+      createScene1(),
+      createScene2(),
+      createScene3(),
+      createScene4()
+    ];
+
+    function playScene(index) {
+      if (index < timelines.length) {
+        timelines[index].play(0);
+      }
+    }
+
+    window.onload = () => playScene(0);
+    window.__timelines = timelines;
+  </script>
+</body>
+</html>
